@@ -32,12 +32,6 @@ const Hero: React.FC = () => {
             >
               ОТКРЫТЬ КАТАЛОГ
             </a>
-            <button 
-              onClick={() => document.getElementById('ai-assistant')?.scrollIntoView({ behavior: 'smooth'})}
-              className="bg-white/5 hover:bg-white/10 text-white backdrop-blur-md px-12 py-5 rounded-2xl font-bold text-lg border border-white/10 transition-all text-center"
-            >
-              ПОДОБРАТЬ ИГРУ
-            </button>
         </div>
       </div>
 

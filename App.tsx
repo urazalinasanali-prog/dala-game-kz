@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import GameCard from './components/GameCard';
-import AIChatbot from './components/AIChatbot';
 import { GAMES, CATEGORIES, WHATSAPP_PHONE } from './constants';
 
 const App: React.FC = () => {
@@ -78,9 +77,6 @@ const App: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* AI Assistant */}
-      <AIChatbot />
 
       {/* Footer */}
       <footer className="py-24 text-center border-t border-white/5">

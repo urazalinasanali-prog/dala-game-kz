@@ -19,7 +19,6 @@ const Navbar: React.FC = () => {
       </div>
       <div className="hidden md:flex gap-8 text-xs font-semibold uppercase tracking-widest items-center">
         <a href="#catalog" className="hover:text-blue-500 transition-colors">Каталог</a>
-        <a href="#ai-assistant" className="hover:text-blue-500 transition-colors">Помощник</a>
         <div className="flex items-center gap-2">
             <span className="text-red-500 font-bold animate-pulse">Kaspi Red 0-0-12</span>
         </div>
