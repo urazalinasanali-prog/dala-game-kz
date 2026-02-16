@@ -1,92 +1,55 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DALA GAME - Магазин игр</title>
+    <title>DALA GAME | PlayStation Digital Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a0a; color: white; text-align: center; padding: 20px; margin: 0; }
-        .header { background: #1a1a1a; padding: 40px 20px; margin-bottom: 30px; border-bottom: 2px solid #00ff88; }
-        .header h1 { color: #00ff88; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px; }
-        .header p { color: #888; margin-top: 10px; }
-        .catalog-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 25px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            scroll-behavior: smooth; 
         }
-        .game-card { 
-            background: #161616; 
-            padding: 25px; 
-            border-radius: 20px; 
-            border: 1px solid #333; 
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .font-gaming { 
+            font-family: 'Rajdhani', sans-serif; 
         }
-        .game-card:hover { border-color: #00ff88; transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,255,136,0.1); }
-        .game-name { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; min-height: 50px; }
-        .price { font-size: 28px; color: #00ff88; font-weight: bold; margin: 20px 0; }
-        .buy-btn { 
-            background: #00ff88; color: black; border: none; padding: 12px; 
-            border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;
-            transition: 0.2s;
+        .ps-blue-glow { 
+            box-shadow: 0 0 20px rgba(0, 112, 243, 0.4); 
         }
-        .buy-btn:hover { background: #fff; transform: scale(1.05); }
-        #loader { font-size: 20px; color: #888; margin-top: 50px; }
+        .kaspi-red-badge { 
+            background: linear-gradient(90deg, #ff0000 0%, #b30000 100%); 
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
     </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
+  }
+}
+</script>
 </head>
 <body>
-
-    <div class="header">
-        <h1>DALA GAME KZ</h1>
-        <p>Лучшие цены на игры в Астане</p>
-    </div>
-
-    <div id="loader">Загружаем актуальные цены...</div>
-    <div id="catalog" class="catalog-grid"></div>
-
-    <script>
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
-
-        async function loadGames() {
-            const catalog = document.getElementById('catalog');
-            const loader = document.getElementById('loader');
-            try {
-                const response = await fetch(SHEET_URL);
-                const csvText = await response.text();
-                const rows = csvText.split('\n').filter(row => row.trim() !== '').slice(1);
-                
-                loader.style.display = 'none';
-                catalog.innerHTML = '';
-
-                rows.forEach(row => {
-                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (columns.length >= 2) {
-                        const name = columns[0].replace(/"/g, '').trim();
-                        const price = columns[1].replace(/"/g, '').trim();
-                        
-                        catalog.innerHTML += `
-                            <div class="game-card">
-                                <div class="game-name">${name}</div>
-                                <div class="price">${price} ₸</div>
-                                <button class="buy-btn" onclick="window.open('https://wa.me/77073244244?text=Здравствуйте! Хочу купить игру: ${name}')">
-                                    КУПИТЬ В WHATSAPP
-                                </button>
-                            </div>
-                        `;
-                    }
-                });
-            } catch (error) {
-                loader.innerHTML = "Ошибка загрузки данных. Проверьте соединение.";
-                console.error(error);
-            }
-        }
-
-        loadGames();
-    </script>
+    <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
