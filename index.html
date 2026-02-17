@@ -53,9 +53,9 @@
 <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
   }
 }
@@ -70,13 +70,10 @@
         const { useState, useEffect } = React;
 
         // --- CONSTANTS ---
-        const WHATSAPP_PHONE = "77073244244"; // Updated from your provided code
+        const WHATSAPP_PHONE = "77073244244"; 
+        // Ссылка на CSV (Google Таблица должна быть опубликована: Файл -> Поделиться -> Опубликовать в интернете -> CSV)
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
         
-        // Default categories for filtering. 
-        // Note: If your CSV doesn't have a category column, games will default to 'PlayStation' or 'Все'.
-        const CATEGORIES = ['Все', 'Спорт', 'Экшн', 'Файтинг', 'RPG'];
-
         // --- COMPONENTS ---
 
         const Navbar = () => {
@@ -194,7 +191,7 @@
                         )}
 
                         <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <span className="text-white/60 text-xs font-gaming uppercase tracking-widest">{game.category || 'PlayStation'}</span>
+                            <span className="text-white/60 text-xs font-gaming uppercase tracking-widest">{game.categoryDisplay}</span>
                         </div>
                     </div>
 
@@ -228,6 +225,7 @@
         const App = () => {
             const [selectedCategory, setSelectedCategory] = useState('Все');
             const [games, setGames] = useState([]);
+            const [categories, setCategories] = useState(['Все']); // Динамические категории
             const [loading, setLoading] = useState(true);
 
             useEffect(() => {
@@ -236,19 +234,27 @@
                         const res = await fetch(SHEET_URL);
                         const data = await res.text();
                         
-                        // Parse CSV
+                        // Парсим CSV
                         const rows = data.split('\n').filter(row => row.trim() !== '').slice(1);
                         const parsed = rows.map((row, index) => {
-                            // CSV regex to handle commas inside quotes
+                            // Регулярка для CSV
                             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                             
                             const name = cols[0]?.replace(/^"|"$/g, '').trim() || 'Без названия';
                             const priceString = cols[1]?.replace(/^"|"$/g, '').trim() || '0';
                             const image = cols[2]?.replace(/^"|"$/g, '').trim() || '';
-                            // Optional: If you add a 4th column for category in your sheet, this will pick it up
-                            const category = cols[3]?.replace(/^"|"$/g, '').trim() || 'PlayStation';
+                            
+                            // Считываем жанры из колонок 4, 5, 6 (индексы 3, 4, 5)
+                            // Формируем массив всех возможных жанров для этой игры
+                            const rawCats = [cols[3], cols[4], cols[5]];
+                            const categories = rawCats
+                                .map(c => c?.replace(/^"|"$/g, '').trim()) // Чистим от кавычек и пробелов
+                                .filter(c => c && c.toLowerCase() !== 'playstation'); // Убираем пустые и 'PlayStation'
 
-                            // Clean price (remove spaces, currency symbols) to get a number
+                            // Для отображения на карточке объединяем через разделитель
+                            const categoryDisplay = categories.join(' • ');
+
+                            // Чистим цену
                             const price = parseInt(priceString.replace(/\D/g, '')) || 0;
 
                             return {
@@ -256,12 +262,20 @@
                                 name,
                                 price,
                                 image,
-                                category,
-                                isNew: index < 3, // Just for visual flare, mark first 3 as new
+                                categories, // Массив жанров для фильтрации
+                                categoryDisplay, // Строка для отображения
+                                isNew: index < 3,
                             };
                         });
                         
                         setGames(parsed);
+
+                        // Собираем уникальные жанры из всех колонок всех игр
+                        const allCats = parsed.flatMap(g => g.categories);
+                        const uniqueCats = Array.from(new Set(allCats)).sort();
+                        
+                        setCategories(['Все', ...uniqueCats]);
+
                         setLoading(false);
                     } catch (error) {
                         console.error("Error fetching sheet:", error);
@@ -274,7 +288,7 @@
 
             const filteredGames = selectedCategory === 'Все' 
                 ? games 
-                : games.filter(game => game.category === selectedCategory || (selectedCategory === 'Все'));
+                : games.filter(game => game.categories.includes(selectedCategory));
 
             const handleOrderGeneral = () => {
                 const message = "Саламатсыз ба! Рассрочка туралы сұрайын деп едім.";
@@ -296,7 +310,7 @@
                             </div>
                             
                             <div className="flex flex-wrap gap-2">
-                                {CATEGORIES.map(cat => (
+                                {categories.map(cat => (
                                     <button
                                         key={cat}
                                         onClick={() => setSelectedCategory(cat)}
@@ -326,8 +340,11 @@
                                         <GameCard key={game.id} game={game} />
                                     ))
                                 ) : (
-                                    <div className="col-span-full text-center py-20 text-gray-500">
-                                        В этой категории пока нет игр
+                                    <div className="col-span-full text-center py-20 text-gray-500 flex flex-col items-center">
+                                        <p className="text-xl">В категории "{selectedCategory}" пока нет игр</p>
+                                        <button onClick={() => setSelectedCategory('Все')} className="mt-4 text-blue-500 hover:underline">
+                                            Показать все игры
+                                        </button>
                                     </div>
                                 )}
                             </div>
