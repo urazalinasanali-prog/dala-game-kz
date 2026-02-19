@@ -6,7 +6,7 @@ function App() {
 
   // ТВОИ НАСТРОЙКИ
   const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
-  const WHATSAPP_PHONE = "77073244244"; 
+  const WHATSAPP_PHONE = "77066386792"; 
 
   useEffect(() => {
     fetch(SHEET_URL)

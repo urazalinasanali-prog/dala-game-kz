@@ -60,6 +60,7 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <!-- Root Element -->
@@ -70,7 +71,7 @@
         const { useState, useEffect } = React;
 
         // --- CONSTANTS ---
-        const WHATSAPP_PHONE = "77073244244"; 
+        const WHATSAPP_PHONE = "77066386792"; 
         const INSTAGRAM_LINK = "https://www.instagram.com/dalagame.qz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
         // Ссылка на CSV (Google Таблица должна быть опубликована: Файл -> Поделиться -> Опубликовать в интернете -> CSV)
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
@@ -459,5 +460,6 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
