@@ -282,9 +282,9 @@
                             const priceString = cols[1]?.replace(/^"|"$/g, '').trim() || '0';
                             const image = cols[2]?.replace(/^"|"$/g, '').trim() || '';
                             
-                            // Считываем жанры из колонок 4, 5, 6 (индексы 3, 4, 5)
+                            // Считываем жанры из колонок 4 и далее (индексы 3+)
                             // Формируем массив всех возможных жанров для этой игры
-                            const rawCats = [cols[3], cols[4], cols[5]];
+                            const rawCats = cols.slice(3);
                             const categories = rawCats
                                 .map(c => c?.replace(/^"|"$/g, '').trim()) // Чистим от кавычек и пробелов
                                 .filter(c => c && c.toLowerCase() !== 'playstation'); // Убираем пустые и 'PlayStation'
