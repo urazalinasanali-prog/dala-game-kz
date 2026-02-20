@@ -280,9 +280,9 @@
                             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                             
                             const name = cols[0]?.replace(/^"|"$/g, '').trim() || 'Без названия';
-                            const priceString = cols[1]?.replace(/^"|"$/g, '').trim() || '0';
-                            const image = cols[2]?.replace(/^"|"$/g, '').trim() || '';
-                            const platform = cols[3]?.replace(/^"|"$/g, '').trim() || 'PS4';
+                            const pricePS5String = cols[1]?.replace(/^"|"$/g, '').trim() || '0';
+                            const pricePS4String = cols[2]?.replace(/^"|"$/g, '').trim() || '0';
+                            const image = cols[3]?.replace(/^"|"$/g, '').trim() || '';
                             
                             // Считываем жанры из колонок 5 и далее (индексы 4+)
                             // Формируем массив всех возможных жанров для этой игры
@@ -294,15 +294,16 @@
                             // Для отображения на карточке объединяем через разделитель
                             const categoryDisplay = categories.join(' • ');
 
-                            // Чистим цену
-                            const price = parseInt(priceString.replace(/\D/g, '')) || 0;
+                            // Чистим цены
+                            const pricePS5 = parseInt(pricePS5String.replace(/\D/g, '')) || 0;
+                            const pricePS4 = parseInt(pricePS4String.replace(/\D/g, '')) || 0;
 
                             return {
                                 id: `game-${index}`,
                                 name,
-                                price,
+                                pricePS5,
+                                pricePS4,
                                 image,
-                                platform,
                                 categories, // Массив жанров для фильтрации
                                 categoryDisplay, // Строка для отображения
                                 isNew: index < 3,
@@ -330,11 +331,8 @@
             const filteredGames = games.filter(game => {
                 // Фильтр по платформе (если выбрана)
                 if (selectedPlatform) {
-                    const p = (game.platform || '').toLowerCase();
-                    const target = selectedPlatform === 'PlayStation 4' ? '4' : '5';
-                    // Если в ячейке платформы есть цифра целевой консоли (4 или 5)
-                    // Или если платформа не указана, показываем везде (опционально, но лучше строго)
-                    if (!p.includes(target) && !p.includes('ps' + target)) return false;
+                    if (selectedPlatform === 'PlayStation 5' && (!game.pricePS5 || game.pricePS5 === 0)) return false;
+                    if (selectedPlatform === 'PlayStation 4' && (!game.pricePS4 || game.pricePS4 === 0)) return false;
                 }
                 
                 // Фильтр по категории
@@ -343,7 +341,10 @@
                 }
                 
                 return true;
-            });
+            }).map(game => ({
+                ...game,
+                price: selectedPlatform === 'PlayStation 5' ? game.pricePS5 : game.pricePS4
+            }));
 
             const handleOrderGeneral = () => {
                 const message = "Саламатсыз ба! Рассрочка туралы сұрайын деп едім.";
