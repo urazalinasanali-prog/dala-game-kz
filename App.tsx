@@ -5,7 +5,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   // ТВОИ НАСТРОЙКИ
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1418400211&single=true&output=csv";
   const WHATSAPP_PHONE = "77066386792"; 
 
   useEffect(() => {

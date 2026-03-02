@@ -74,7 +74,7 @@
         const WHATSAPP_PHONE = "77066386792"; 
         const INSTAGRAM_LINK = "https://www.instagram.com/dalagame.qz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
         // Ссылка на CSV (Google Таблица должна быть опубликована: Файл -> Поделиться -> Опубликовать в интернете -> CSV)
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=0&single=true&output=csv";
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1418400211&single=true&output=csv";
         
         // --- COMPONENTS ---
 
@@ -266,12 +266,20 @@
             const [games, setGames] = useState([]);
             const [categories, setCategories] = useState(['Все']); // Динамические категории
             const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
 
             useEffect(() => {
                 const fetchGames = async () => {
                     try {
                         const res = await fetch(SHEET_URL);
                         const data = await res.text();
+                        
+                        // Проверка на ошибку (если вернулся HTML вместо CSV)
+                        if (data.trim().startsWith('<') || res.status >= 400) {
+                            setError('Ошибка синхронизации: Google Таблица не опубликована или ссылка неверна. Пожалуйста, проверьте настройки доступа таблицы.');
+                            setLoading(false);
+                            return;
+                        }
                         
                         // Парсим CSV
                         const rows = data.split('\n').filter(row => row.trim() !== '').slice(1);
@@ -321,6 +329,7 @@
                         setLoading(false);
                     } catch (error) {
                         console.error("Error fetching sheet:", error);
+                        setError('Ошибка сети при загрузке данных. Проверьте подключение к интернету.');
                         setLoading(false);
                     }
                 };
@@ -434,6 +443,12 @@
                                             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                                             <p className="text-blue-500 font-gaming tracking-widest animate-pulse">Загрузка игр...</p>
                                         </div>
+                                    </div>
+                                ) : error ? (
+                                    <div className="col-span-full text-center py-20 text-red-500 flex flex-col items-center bg-red-900/20 rounded-3xl border border-red-500/30 p-8">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        <p className="text-xl font-bold mb-2">Упс, что-то пошло не так!</p>
+                                        <p className="text-gray-400 max-w-md">{error}</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
