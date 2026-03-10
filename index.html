@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@dalagame.qz - установка цифровых игр на PlayStation</title>
+    <title>Установка цифровых игры на PlayStation</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -75,6 +75,7 @@
         const INSTAGRAM_LINK = "https://www.instagram.com/dalagame.qz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
         // Ссылка на CSV (Google Таблица должна быть опубликована: Файл -> Поделиться -> Опубликовать в интернете -> CSV)
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1418400211&single=true&output=csv";
+        const DESC_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1350001392&single=true&output=csv";
         
         // --- COMPONENTS ---
 
@@ -265,23 +266,37 @@
             const [selectedPlatform, setSelectedPlatform] = useState(null);
             const [games, setGames] = useState([]);
             const [categories, setCategories] = useState(['Все']); // Динамические категории
+            const [descriptions, setDescriptions] = useState([]);
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
 
             useEffect(() => {
-                const fetchGames = async () => {
+                const fetchData = async () => {
                     try {
-                        const res = await fetch(SHEET_URL);
-                        const data = await res.text();
+                        const [gamesRes, descRes] = await Promise.all([
+                            fetch(SHEET_URL),
+                            fetch(DESC_SHEET_URL)
+                        ]);
+                        
+                        const gamesData = await gamesRes.text();
+                        const descData = await descRes.text();
                         
                         // Проверка на ошибку (если вернулся HTML вместо CSV)
-                        if (data.trim().startsWith('<') || res.status >= 400) {
+                        if (gamesData.trim().startsWith('<') || gamesRes.status >= 400) {
                             setError('Ошибка синхронизации: Google Таблица не опубликована или ссылка неверна. Пожалуйста, проверьте настройки доступа таблицы.');
                             setLoading(false);
                             return;
                         }
                         
-                        // Парсим CSV
+                        // Парсим CSV описаний
+                        const descRows = descData.split('\n').filter(row => row.trim() !== '').slice(1);
+                        const parsedDesc = descRows.map(row => {
+                            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                            return cols[0]?.replace(/^"|"$/g, '').trim();
+                        }).filter(Boolean);
+                        setDescriptions(parsedDesc);
+                        
+                        // Парсим CSV игр
                         const rows = data.split('\n').filter(row => row.trim() !== '').slice(1);
                         const parsed = rows.map((row, index) => {
                             // Регулярка для CSV
@@ -334,7 +349,7 @@
                     }
                 };
 
-                fetchGames();
+                fetchData();
             }, []);
 
             const filteredGames = games.filter(game => {
@@ -364,7 +379,7 @@
             return (
                 <div className="min-h-screen">
                     <Navbar />
-                    <Hero />
+                    <Hero descriptions={descriptions} />
 
                     {/* Catalog Section */}
                     <section id="catalog" className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
