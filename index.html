@@ -173,7 +173,6 @@
                         <div className="flex flex-col gap-3 max-w-xl mx-auto mb-12 text-left md:text-center items-start md:items-center bg-black/40 p-6 rounded-3xl border border-white/5 backdrop-blur-sm">
                             {descriptions.length > 0 ? descriptions.map((desc, i) => (
                                 <div key={i} className="flex items-center gap-3 text-gray-200 text-base md:text-lg font-medium">
-                                    <span className="text-2xl min-w-[30px] text-center">✨</span>
                                     <span>{desc}</span>
                                 </div>
                             )) : (
@@ -269,9 +268,20 @@
         };
 
         const GameModal = ({ game, selectedPlatform, onClose, onAddToCart }) => {
+            const [isAdded, setIsAdded] = useState(false);
+
             if (!game) return null;
             const monthlyPrice = Math.round(game.price / 12);
             const hasDiscount = game.discount > 0;
+
+            const handleAddToCart = () => {
+                onAddToCart(game, selectedPlatform);
+                setIsAdded(true);
+                setTimeout(() => {
+                    setIsAdded(false);
+                    onClose();
+                }, 1000);
+            };
 
             return (
                 <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
@@ -325,14 +335,20 @@
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => {
-                                        onAddToCart(game, selectedPlatform);
-                                        onClose();
-                                    }}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold uppercase tracking-widest transition-all cursor-pointer flex justify-center items-center gap-2"
+                                    onClick={handleAddToCart}
+                                    className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest transition-all cursor-pointer flex justify-center items-center gap-2 ${isAdded ? 'bg-green-500 text-white scale-105' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
                                 >
-                                    В корзину
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                                    {isAdded ? (
+                                        <>
+                                            Добавлено
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        </>
+                                    ) : (
+                                        <>
+                                            В корзину
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -342,8 +358,16 @@
         };
 
         const GameCard = ({ game, selectedPlatform, onAddToCart, onOpenModal }) => {
+            const [isAdded, setIsAdded] = useState(false);
             const monthlyPrice = Math.round(game.price / 12);
             const hasDiscount = game.discount > 0;
+
+            const handleAddToCart = (e) => {
+                e.stopPropagation();
+                onAddToCart(game, selectedPlatform);
+                setIsAdded(true);
+                setTimeout(() => setIsAdded(false), 1500);
+            };
 
             return (
                 <div className="group bg-zinc-900/40 border border-white/5 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:border-blue-500/50 hover:shadow-[0_20px_50px_-10px_rgba(59,130,246,0.3)]">
@@ -408,11 +432,20 @@
                         </div>
 
                         <button 
-                            onClick={() => onAddToCart(game, selectedPlatform)}
-                            className="w-full bg-white text-black hover:bg-blue-600 hover:text-white py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-xs active:scale-95 cursor-pointer"
+                            onClick={handleAddToCart}
+                            className={`w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-xs active:scale-95 cursor-pointer ${isAdded ? 'bg-green-500 text-white scale-105' : 'bg-white text-black hover:bg-blue-600 hover:text-white'}`}
                         >
-                            В корзину
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                            {isAdded ? (
+                                <>
+                                    Добавлено
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </>
+                            ) : (
+                                <>
+                                    В корзину
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -664,15 +697,28 @@
                         ))}
                     </div>
 
-                    {!showAll && reviewsData.length > 12 && (
+                    {reviewsData.length > 12 && (
                         <div className="mt-12 flex justify-center">
-                            <button 
-                                onClick={() => setShowAll(true)}
-                                className="bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-4 rounded-xl font-bold transition-colors border border-white/10 cursor-pointer flex items-center gap-2"
-                            >
-                                Показать все отзывы ({reviewsData.length})
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </button>
+                            {!showAll ? (
+                                <button 
+                                    onClick={() => setShowAll(true)}
+                                    className="bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-4 rounded-xl font-bold transition-colors border border-white/10 cursor-pointer flex items-center gap-2"
+                                >
+                                    Показать все отзывы ({reviewsData.length})
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={() => {
+                                        setShowAll(false);
+                                        document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className="bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-4 rounded-xl font-bold transition-colors border border-white/10 cursor-pointer flex items-center gap-2"
+                                >
+                                    Свернуть отзывы
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                </button>
+                            )}
                         </div>
                     )}
                 </section>
@@ -688,6 +734,7 @@
             const [descriptions, setDescriptions] = useState([]);
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
+            const [welcomeMessage, setWelcomeMessage] = useState("Здравствуйте! Пишу с сайта Dala Game.");
 
             const [cart, setCart] = useState([]);
             const [isCartOpen, setIsCartOpen] = useState(false);
@@ -696,9 +743,10 @@
             useEffect(() => {
                 const fetchData = async () => {
                     try {
+                        const timestamp = new Date().getTime();
                         const [gamesRes, descRes] = await Promise.all([
-                            fetch(SHEET_URL),
-                            fetch(DESC_SHEET_URL)
+                            fetch(`${SHEET_URL}&_=${timestamp}`),
+                            fetch(`${DESC_SHEET_URL}&_=${timestamp}`)
                         ]);
                         
                         const gamesData = await gamesRes.text();
@@ -713,11 +761,18 @@
                         
                         // Парсим CSV описаний
                         const descRows = descData.split('\n').filter(row => row.trim() !== '').slice(1);
+                        let fetchedWelcomeMessage = null;
                         const parsedDesc = descRows.map(row => {
                             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                            if (cols[1] && !fetchedWelcomeMessage) {
+                                fetchedWelcomeMessage = cols[1].replace(/^"|"$/g, '').trim();
+                            }
                             return cols[0]?.replace(/^"|"$/g, '').trim();
                         }).filter(Boolean);
                         setDescriptions(parsedDesc);
+                        if (fetchedWelcomeMessage) {
+                            setWelcomeMessage(fetchedWelcomeMessage);
+                        }
                         
                         // Парсим CSV игр с учетом переносов строк в кавычках
                         const parseCSV = (text) => {
@@ -759,7 +814,6 @@
                             const description = cols[5] || '';
                             
                             let discount = 0;
-                            // Извлекаем любые цифры из строки скидки (например, "-10%", "10", "скидка 15%")
                             const discountNum = parseInt(discountString.replace(/\D/g, ''), 10);
                             if (!isNaN(discountNum) && discountNum > 0 && discountNum <= 100) {
                                 discount = discountNum;
@@ -841,7 +895,7 @@
             });
 
             const handleOrderGeneral = () => {
-                const message = "Саламатсыз ба! Рассрочка туралы сұрайын деп едім.";
+                const message = "Здравствуйте! Хочу узнать насчет рассрочки.";
                 const url = "https://api.whatsapp.com/send?phone=" + WHATSAPP_PHONE + "&text=" + encodeURIComponent(message);
                 window.open(url, '_blank');
             };
@@ -857,13 +911,14 @@
 
             const checkoutCart = () => {
                 if (cart.length === 0) return;
-                let message = "Саламатсыз ба! Dala Game сайтынан жазып тұрмын. Осы ойындарды алғым келеді:\n\n";
+                
+                let message = `${welcomeMessage}\n\nХочу приобрести следующие игры:\n\n`;
                 let total = 0;
                 cart.forEach((item, i) => {
                     message += `${i + 1}. ${item.name} (${item.platform}) - ${item.price} ₸\n`;
                     total += item.price;
                 });
-                message += `\nБарлығы: ${total} ₸\nКаспи Ред-пен төлеуге бола ма?`;
+                message += `\nИтого: ${total} ₸\nМожно ли оплатить через Kaspi Red?`;
                 const url = "https://api.whatsapp.com/send?phone=" + WHATSAPP_PHONE + "&text=" + encodeURIComponent(message);
                 window.open(url, '_blank');
             };
