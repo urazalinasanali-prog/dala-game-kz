@@ -807,20 +807,27 @@
                         
                         const parsed = rows.filter(cols => cols.length > 1 && cols[0]).map((cols, index) => {
                             const name = cols[0] || 'Без названия';
-                            const discountString = cols[1] || '';
-                            const pricePS5String = cols[2] || '0';
-                            const pricePS4String = cols[3] || '0';
-                            const image = cols[4] || '';
-                            const description = cols[5] || '';
+                            const discountPS4String = cols[1] || '';
+                            const discountPS5String = cols[2] || '';
+                            const pricePS5String = cols[3] || '0';
+                            const pricePS4String = cols[4] || '0';
+                            const image = cols[5] || '';
+                            const description = cols[6] || '';
                             
-                            let discount = 0;
-                            const discountNum = parseInt(discountString.replace(/\D/g, ''), 10);
-                            if (!isNaN(discountNum) && discountNum > 0 && discountNum <= 100) {
-                                discount = discountNum;
+                            let discountPS4 = 0;
+                            const discountPS4Num = parseInt(discountPS4String.replace(/\D/g, ''), 10);
+                            if (!isNaN(discountPS4Num) && discountPS4Num > 0 && discountPS4Num <= 100) {
+                                discountPS4 = discountPS4Num;
                             }
 
-                            // Считываем жанры из колонок 7 и далее (индексы 6+)
-                            const rawCats = cols.slice(6);
+                            let discountPS5 = 0;
+                            const discountPS5Num = parseInt(discountPS5String.replace(/\D/g, ''), 10);
+                            if (!isNaN(discountPS5Num) && discountPS5Num > 0 && discountPS5Num <= 100) {
+                                discountPS5 = discountPS5Num;
+                            }
+
+                            // Считываем жанры из колонок 8 и далее (индексы 7+)
+                            const rawCats = cols.slice(7);
                             const categories = rawCats
                                 .filter(c => c && c.toLowerCase() !== 'playstation');
 
@@ -841,8 +848,8 @@
                                 categoryDisplay, // Строка для отображения
                                 description, // Описание игры
                                 isNew: index < 3,
-                                discount, // Сохраняем процент скидки
-                                isSale: discount > 0 // Флаг для бейджа "Акция"
+                                discountPS4,
+                                discountPS5
                             };
                         });
                         
@@ -875,7 +882,8 @@
                 // Фильтр по категории
                 if (selectedCategory !== 'Все') {
                     if (selectedCategory === 'Акции') {
-                        if (!game.isSale) return false;
+                        const currentDiscount = selectedPlatform === 'PlayStation 5' ? game.discountPS5 : game.discountPS4;
+                        if (!(currentDiscount > 0)) return false;
                     } else {
                         if (!game.categories.includes(selectedCategory)) return false;
                     }
@@ -889,11 +897,14 @@
                 return true;
             }).map(game => {
                 const basePrice = selectedPlatform === 'PlayStation 5' ? game.pricePS5 : game.pricePS4;
-                const finalPrice = game.discount > 0 ? Math.round(basePrice * (1 - game.discount / 100)) : basePrice;
+                const discount = selectedPlatform === 'PlayStation 5' ? game.discountPS5 : game.discountPS4;
+                const finalPrice = discount > 0 ? Math.round(basePrice * (1 - discount / 100)) : basePrice;
                 
                 return {
                     ...game,
                     basePrice,
+                    discount,
+                    isSale: discount > 0,
                     price: finalPrice
                 };
             });
