@@ -107,7 +107,7 @@
                         <span className="text-2xl font-bold tracking-tighter font-gaming group-hover:text-blue-400 transition-colors hidden sm:block">@dalagame.qz</span>
                     </a>
                     <div className="hidden md:flex gap-8 text-xs font-semibold uppercase tracking-widest items-center">
-                        <button onClick={(e) => scrollToSection(e, 'top')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Главное</button>
+                        <button onClick={(e) => scrollToSection(e, 'top')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Главная</button>
                         <button onClick={(e) => scrollToSection(e, 'catalog')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Каталог</button>
                         <button onClick={(e) => scrollToSection(e, 'subscriptions')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Подписки</button>
                         <button onClick={(e) => scrollToSection(e, 'reviews')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Отзывы</button>
@@ -727,7 +727,7 @@
         };
 
         const App = () => {
-            const [selectedCategory, setSelectedCategory] = useState('Все');
+            const [selectedCategories, setSelectedCategories] = useState(['Все']);
             const [selectedPlatform, setSelectedPlatform] = useState(null);
             const [searchQuery, setSearchQuery] = useState('');
             const [games, setGames] = useState([]);
@@ -741,6 +741,24 @@
             const [cart, setCart] = useState([]);
             const [isCartOpen, setIsCartOpen] = useState(false);
             const [selectedGame, setSelectedGame] = useState(null);
+
+            const handleCategoryToggle = (cat) => {
+                if (cat === 'Все') {
+                    setSelectedCategories(['Все']);
+                    return;
+                }
+
+                setSelectedCategories(prev => {
+                    let newCats = prev.includes(cat) 
+                        ? prev.filter(c => c !== cat) 
+                        : [...prev.filter(c => c !== 'Все'), cat];
+                    
+                    if (newCats.length === 0) {
+                        return ['Все'];
+                    }
+                    return newCats;
+                });
+            };
 
             useEffect(() => {
                 const fetchData = async () => {
@@ -928,13 +946,19 @@
                     if (selectedPlatform === 'PlayStation 4' && (!game.pricePS4 || game.pricePS4 === 0)) return false;
                 }
                 
-                // Фильтр по категории
-                if (selectedCategory !== 'Все') {
-                    if (selectedCategory === 'Акции') {
+                // Фильтр по категориям
+                if (!selectedCategories.includes('Все')) {
+                    // Проверка на Акции
+                    if (selectedCategories.includes('Акции')) {
                         const currentDiscount = selectedPlatform === 'PlayStation 5' ? game.discountPS5 : game.discountPS4;
                         if (!(currentDiscount > 0)) return false;
-                    } else {
-                        if (!game.categories.includes(selectedCategory)) return false;
+                    }
+                    
+                    // Проверка на остальные жанры (ИЛИ)
+                    const selectedGenres = selectedCategories.filter(c => c !== 'Акции');
+                    if (selectedGenres.length > 0) {
+                        const hasMatch = selectedGenres.some(genre => game.categories.includes(genre));
+                        if (!hasMatch) return false;
                     }
                 }
                 
@@ -1073,7 +1097,7 @@
                                         <div className="flex flex-wrap gap-2">
                                             {categories.map(cat => {
                                                 const isSaleCat = cat === 'Акции';
-                                                const isActive = selectedCategory === cat;
+                                                const isActive = selectedCategories.includes(cat);
                                                 
                                                 let btnClass = 'px-6 py-2 rounded-xl text-xs font-bold transition-all uppercase tracking-widest cursor-pointer ';
                                                 
@@ -1090,7 +1114,7 @@
                                                 return (
                                                     <button
                                                         key={cat}
-                                                        onClick={() => setSelectedCategory(cat)}
+                                                        onClick={() => handleCategoryToggle(cat)}
                                                         className={btnClass}
                                                     >
                                                         {cat}
@@ -1128,9 +1152,9 @@
                                             ))
                                         ) : (
                                             <div className="col-span-full text-center py-20 text-gray-500 flex flex-col items-center">
-                                                <p className="text-xl">В категории "{selectedCategory}" для {selectedPlatform} пока нет игр</p>
-                                                <button onClick={() => setSelectedCategory('Все')} className="mt-4 text-blue-500 hover:underline cursor-pointer">
-                                                    Показать все жанры
+                                                <p className="text-xl">По выбранным фильтрам для {selectedPlatform} пока нет игр</p>
+                                                <button onClick={() => setSelectedCategories(['Все'])} className="mt-4 text-blue-500 hover:underline cursor-pointer">
+                                                    Сбросить фильтры
                                                 </button>
                                             </div>
                                         )}
@@ -1144,8 +1168,17 @@
                     <section id="subscriptions" className="py-24 px-6 max-w-7xl mx-auto">
                         <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-8">
                             <div>
+                                {selectedPlatform && (
+                                    <button 
+                                        onClick={() => setSelectedPlatform(null)}
+                                        className="text-gray-500 hover:text-white mb-4 flex items-center gap-2 text-xs uppercase tracking-widest transition-colors cursor-pointer"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                        Сменить консоль
+                                    </button>
+                                )}
                                 <h2 className="text-5xl font-bold font-gaming uppercase tracking-tight mb-4">
-                                    Подписки <span className="text-blue-500">PlayStation</span>
+                                    Подписки на <span className="text-blue-500">{selectedPlatform ? selectedPlatform : 'PlayStation'}</span>
                                 </h2>
                                 <div className="h-1.5 w-24 bg-blue-600 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
                             </div>
