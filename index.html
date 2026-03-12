@@ -19,6 +19,10 @@
     <!-- Babel Standalone (to compile JSX in browser) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -77,6 +81,23 @@
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1418400211&single=true&output=csv";
         const DESC_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJNJu3ItvN4gbicHMmBPMEuX0iKSoi30tYKpkEMgpFlbwNXEZcgNag9JA_-mreOgiiGh4_h8Bd4QJD/pub?gid=1350001392&single=true&output=csv";
         
+        // --- FIREBASE INITIALIZATION ---
+        const firebaseConfig = {
+            projectId: "gen-lang-client-0750114527",
+            appId: "1:803332148250:web:e3958a118022d566f6d5a3",
+            apiKey: "AIzaSyBCkru9ODQc_O8B0-IhpxgIaK_DDw_lOyA",
+            authDomain: "gen-lang-client-0750114527.firebaseapp.com",
+            firestoreDatabaseId: "ai-studio-363bf2f6-f6e7-4908-9943-8369985809d6",
+            storageBucket: "gen-lang-client-0750114527.firebasestorage.app",
+            messagingSenderId: "803332148250",
+            measurementId: ""
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
         // --- COMPONENTS ---
 
         const Navbar = ({ cartCount, onOpenCart, onResetSelection }) => {
@@ -109,6 +130,7 @@
                     <div className="hidden md:flex gap-8 text-xs font-semibold uppercase tracking-widest items-center">
                         <button onClick={(e) => scrollToSection(e, 'top')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Главная</button>
                         <button onClick={onResetSelection} className="text-blue-400 hover:text-blue-300 transition-colors uppercase bg-transparent border-none cursor-pointer font-bold">Выбор приставки</button>
+                        <button onClick={(e) => scrollToSection(e, 'trade-in')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Trade In</button>
                         <button onClick={(e) => scrollToSection(e, 'reviews')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">Отзывы</button>
                         <button onClick={(e) => scrollToSection(e, 'about')} className="hover:text-blue-500 transition-colors uppercase bg-transparent border-none cursor-pointer">О нас</button>
                     </div>
@@ -586,57 +608,6 @@
                 { id: 113, username: "hiphopnato", text: "спасибо за фидбэк, все быстро и четко!", date: "25 нед." },
                 { id: 114, username: "mikhailov.sss", text: "Все супер, всегда на связи, очень доступно объясняют. Доступные цены, очень классный сервис! Рекомендую 👍", date: "25 нед." },
                 { id: 115, username: "david_gabdullin", text: "Отличные ребята , купил подписку", date: "25 нед." },
-                { id: 116, username: "chrnbrvkn.d", text: "Быстро, чётко, доступно. Рекомендую!", date: "25 нед." },
-                { id: 117, username: "urrlyutik", text: "Очень крутой магазин, все подробно объяснили и помогли 🔥", date: "25 нед." },
-                { id: 118, username: "barry_barboskeen", text: "Как все быстро и легко , удивительно 😮👏", date: "25 нед." },
-                { id: 119, username: "kolomoec996", text: "А че так можно было что ли ??? Нереально четко все !!!", date: "25 нед." },
-                { id: 120, username: "maklewx", text: "Очень понравился магазин 🎮 Всё быстро и качественно, игру получил сразу после оплаты. Всё подробно объясняют, помогли разобраться с установкой. 👍 Теперь беру игры только здесь — надёжно и удобно!", date: "25 нед." },
-                { id: 121, username: "ergeshov.sss", text: "быстро и оперативно🔥🔥🔥", date: "26 нед." },
-                { id: 122, username: "egorpanyushkin", text: "Все понятно и быстро🔥", date: "26 нед." },
-                { id: 123, username: "oskar__golden", text: "Все понятно и доступно, спасибо", date: "26 нед." },
-                { id: 124, username: "nekitt_81", text: "Подключили 5 игр , очень быстро , могу теперь насладиться отпуском )", date: "26 нед." },
-                { id: 125, username: "jukupov___05", text: "качественно быстро ответили сразу", date: "26 нед." },
-                { id: 126, username: "offwazupp", text: "Всё понятно и быстро. Спасибо огромное!", date: "26 нед." },
-                { id: 127, username: "ernurshon83", text: "Ответили моментально. Оформили две игры в течении 20 минут. Цены порадовали,так еще и объяснили доходчиво. Спасибо большое,думаю еще не раз возьму тут", date: "26 нед." },
-                { id: 128, username: "baurp0wer", text: "Купил подписку PS4 + все супер Доступнная цена качественное обслуживание теперь всегда у вас буду преобретать Спасибо большое", date: "26 нед." },
-                { id: 129, username: "sembayevm", text: "Отличный сервис. Работают оперативно и качественно. Купил RDR2, сразу понятно объяснили как запустить. Играю и не могу нарадоваться, очень нравится. Спасибо 👍", date: "26 нед." },
-                { id: 130, username: "jas_1211", text: "Быстро и качественно 🔥", date: "26 нед." },
-                { id: 131, username: "daniyar_475", text: "Все качественно и быстро! Спасибо парни", date: "26 нед." },
-                { id: 132, username: "nik_32149", text: "Все супер ребята молодцы все подсказали рекомдую 🔥🔥🔥", date: "27 нед." },
-                { id: 133, username: "rusyago", text: "Всё класно❤️❤️❤️", date: "27 нед." },
-                { id: 134, username: "shevelyov_alexander", text: "приобрел несколько игр, все классно ребята🫰🏼", date: "27 нед." },
-                { id: 135, username: "serik_satmuldinov", text: "Рахмет, купил игру, в течении 2 минут уже скачиваю игру👍", date: "27 нед." },
-                { id: 136, username: "manta_mmm", text: "Купил Fifa 25 у вас, всё чётко 🔥", date: "27 нед." },
-                { id: 137, username: "dan_xss", text: "Быстро обслужили, все супер🙌❤️", date: "27 нед." },
-                { id: 138, username: "roman_turovskiu", text: "Купил подписку, спасибо большое! Буду теперь у вас приобретать 😁👍🏻👍🏻", date: "27 нед." },
-                { id: 139, username: "maralhan__", text: "Купил подписку теперь играю в топ игры , лучший магазин 🔥", date: "27 нед." },
-                { id: 140, username: "daulet_sandugash", text: "Все супер все объяснили купил Fc26 по очень выгодной цене", date: "28 нед." },
-                { id: 141, username: "toleubaevich__", text: "🔥керемет. Бастапқы қарым қатынас, маған ұнап жатыр👏", date: "28 нед." },
-                { id: 142, username: "krmbdv_first", text: "Әдемі әдемі🔥", date: "28 нед." },
-                { id: 143, username: "thedragon.show", text: "Лучшие💪🏼 все четко и оперативно.", date: "28 нед." },
-                { id: 144, username: "eslinger_tanja", text: "❤️🔥 КаеФ", date: "28 нед." },
-                { id: 145, username: "micls_chef", text: "Все быстро, четко, просто. Рекомендую. 👍", date: "28 нед." },
-                { id: 146, username: "zamanov16", text: "Все отлично работает, оперативно", date: "28 нед." },
-                { id: 147, username: "eleuovv_09", text: "🔥🔥🔥", date: "28 нед." },
-                { id: 148, username: "honey.beezy1", text: "Отличный магазин, рекомендую👏", date: "28 нед." },
-                { id: 149, username: "adiyattk", text: "Все супер советую крутые просто!!!", date: "28 нед." },
-                { id: 150, username: "skas102030", text: "🔥🔥🔥", date: "28 нед." },
-                { id: 151, username: "real.vvt", text: "Все сделали быстро все объяснили 🔥👏", date: "29 нед." },
-                { id: 152, username: "ibraev216", text: "Безумно оперативно и качественно работают ✊🏼👍🏼👍🏼👍🏼", date: "29 нед." },
-                { id: 153, username: "ibraev216", text: "Обратная связь хорошая 👍", date: "29 нед." },
-                { id: 154, username: "eraaa_erboluly77", text: "Спасибо хороший магазин 🔥", date: "29 нед." },
-                { id: 155, username: "mustavatu", text: "Спасибо большое все четко и понятно объяснили.Купил игру Человек паук 2 🔥❤️", date: "29 нед." },
-                { id: 156, username: "saverdin_mamyrov", text: "Спасибо сделали все быстро и четко", date: "29 нед." },
-                { id: 157, username: "1brakhimov.s", text: "Супер магазин, спасибо вам🔥", date: "29 нед." },
-                { id: 158, username: "r.sutyushev", text: "Отличный сервис, рекомендую ✅", date: "29 нед." },
-                { id: 159, username: "efimka59", text: "Оформил предзаказ FC26. Все быстро, чётко и понятно. Однозначно рекомендую!🔥", date: "30 нед." },
-                { id: 160, username: "diss21o6", text: "Все как всегда, на высшем уровне! Уже не в первый раз обращаюсь! Спасибо большое!! 🔥❤️", date: "30 нед." },
-                { id: 161, username: "the__boroda", text: "Спасибо большое все быстро и грамотно сделано 👏", date: "30 нед." },
-                { id: 162, username: "baidalyn18", text: "Отличный сервис игры дешевле чем у других 🔥👏", date: "30 нед." },
-                { id: 163, username: "kukaaaaa_____", text: "Спасибо большое за быструю помощь и за вашу работу 👍", date: "30 нед." },
-                { id: 164, username: "aidkinsss", text: "Быстро и качественно однозначно большой +🔥", date: "30 нед." },
-                { id: 165, username: "zommer_alexandr", text: "ооочень быстро установили игру которую братишка хотел,спасибо большое за оперативность🔥", date: "30 нед." },
-                { id: 166, username: "the.alym", text: "Все круто! Быстро произвели установку цифровой версии игры, вообще без проблем 🔥🔥🔥", date: "30 нед." },
                 { id: 167, username: "ka1rzhan21", text: "Хороший ассортимент четко и быстро спасибо 🔥🔥👏", date: "30 нед." },
                 { id: 168, username: "t_zhmv", text: "Мошениктер емес таза живой аккаунт озим жана фс26 предзаказ жасап койдм менде баснда коп бакыладм шын ба отрк аккаунтпа деп брак отзывтарды окп корп козим жетп отр бул шын аккаунт екенинне @playstationqz магазинене рахмет❤️ женилдик жасап берди конкурскада катсп жатрмн 👏барлыгына рахмет😍🔥❤️", date: "30 нед." },
                 { id: 169, username: "valekvalek776", text: "Спасибо ребята! Как обычно все быстро и четко. Самое главное постоянная поддержка и стабильная игра👍👍👍", date: "31 нед." },
@@ -736,6 +707,155 @@
                             )}
                         </div>
                     )}
+                </section>
+            );
+        };
+
+        const TradeIn = () => {
+            const [gameTitle, setGameTitle] = useState('');
+            const [login, setLogin] = useState('');
+            const [password, setPassword] = useState('');
+            const [contactInfo, setContactInfo] = useState('');
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [isSuccess, setIsSuccess] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                if (isSubmitting) return;
+                
+                setIsSubmitting(true);
+                
+                try {
+                    const requestData = {
+                        gameTitle,
+                        login,
+                        password,
+                        contactInfo
+                    };
+                    
+                    await fetch("https://script.google.com/macros/s/AKfycbwJN0XE_c0kO0jeDPwVGp0qcG-02FI8PK903W76tM4fPS3yTfyyd76ph_yBNzlkW9NR/exec", {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    setIsSuccess(true);
+                    setGameTitle('');
+                    setLogin('');
+                    setPassword('');
+                    setContactInfo('');
+                } catch (error) {
+                    console.error("Error submitting trade-in:", error);
+                    alert("Ошибка при отправке. Пожалуйста, попробуйте позже.");
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            return (
+                <section id="trade-in" className="py-24 px-6 max-w-7xl mx-auto border-t border-white/5">
+                    <div className="grid md:grid-cols-2 gap-16 items-center">
+                        <div>
+                            <h2 className="text-4xl md:text-6xl font-bold font-gaming uppercase mb-6">
+                                <span className="text-blue-500">Trade</span> In
+                            </h2>
+                            <p className="text-2xl text-white font-bold mb-4">Верни старую игру и получи скидку на новую!</p>
+                            <p className="text-gray-400 text-lg mb-8">
+                                Мы ценим наших клиентов и предлагаем выгодные условия обмена. Просто заполните форму ниже, указав данные вашего аккаунта с игрой, которую хотите обменять, и мы свяжемся с вами для оценки скидки.
+                            </p>
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4 text-gray-300">
+                                    <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </div>
+                                    <span>Быстрая оценка</span>
+                                </div>
+                                <div className="flex items-center gap-4 text-gray-300">
+                                    <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </div>
+                                    <span>Честные цены</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="bg-zinc-900/50 p-8 rounded-3xl border border-white/10 backdrop-blur-sm">
+                            {isSuccess ? (
+                                <div className="text-center py-12">
+                                    <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-2">Заявка отправлена!</h3>
+                                    <p className="text-gray-400 mb-8">Мы свяжемся с вами в ближайшее время для оценки.</p>
+                                    <button 
+                                        onClick={() => setIsSuccess(false)}
+                                        className="text-blue-500 hover:text-blue-400 font-bold uppercase tracking-widest text-sm"
+                                    >
+                                        Отправить еще одну
+                                    </button>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Название игры</label>
+                                        <input 
+                                            required
+                                            type="text"
+                                            value={gameTitle}
+                                            onChange={(e) => setGameTitle(e.target.value)}
+                                            placeholder="Например: Spider-Man 2"
+                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Логин / Почта</label>
+                                            <input 
+                                                required
+                                                type="text"
+                                                value={login}
+                                                onChange={(e) => setLogin(e.target.value)}
+                                                placeholder="example@mail.com"
+                                                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Пароль</label>
+                                            <input 
+                                                required
+                                                type="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                placeholder="••••••••"
+                                                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Ваши контакты (WhatsApp)</label>
+                                        <input 
+                                            required
+                                            type="text"
+                                            value={contactInfo}
+                                            onChange={(e) => setContactInfo(e.target.value)}
+                                            placeholder="+7 (___) ___-__-__"
+                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                        />
+                                    </div>
+                                    <button 
+                                        disabled={isSubmitting}
+                                        type="submit"
+                                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all active:scale-95 uppercase tracking-widest text-xs shadow-lg shadow-blue-600/20 mt-2"
+                                    >
+                                        {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+                    </div>
                 </section>
             );
         };
@@ -1377,6 +1497,8 @@
 
                     <Reviews />
 
+                    <TradeIn />
+
                     {/* About Us Section */}
                     <section id="about" className="py-24 px-6 max-w-7xl mx-auto border-t border-white/5">
                         <div className="text-center max-w-3xl mx-auto">
@@ -1388,10 +1510,10 @@
                             </p>
                             
                             <div className="flex justify-center gap-6 mt-12">
-                                <a href="https://www.instagram.com/dalagame.qz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" className="w-14 h-14 bg-zinc-900 hover:bg-blue-600 rounded-2xl flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 border border-white/10 group">
+                                <a href="https://www.instagram.com/dalagame.qz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" className="w-14 h-14 bg-zinc-900 hover:bg-gradient-to-tr hover:from-purple-600 hover:to-pink-500 rounded-2xl flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 border border-white/10 group hover:shadow-[0_0_20px_rgba(219,39,119,0.4)]">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-white transition-colors"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                                 </a>
-                                <a href="https://www.tiktok.com/@dalagame.qz?_r=1&_t=ZS-94axsWjmKxU" target="_blank" className="w-14 h-14 bg-zinc-900 hover:bg-blue-600 rounded-2xl flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 border border-white/10 group">
+                                <a href="https://www.tiktok.com/@dalagame.qz?_r=1&_t=ZS-94axsWjmKxU" target="_blank" className="w-14 h-14 bg-zinc-900 hover:bg-purple-600 rounded-2xl flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 border border-white/10 group hover:shadow-[0_0_20px_rgba(147,51,234,0.4)]">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-white transition-colors"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
                                 </a>
                                 <a href="https://api.whatsapp.com/send/?phone=77066386792&text&type=phone_number&app_absent=0&utm_source=ig" target="_blank" className="w-14 h-14 bg-zinc-900 hover:bg-green-600 rounded-2xl flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 border border-white/10 group">
