@@ -682,7 +682,7 @@
                 
                 const message = `Здравствуйте! Хочу сделать Trade In:%0A%0A` +
                                 `Игра, которую хочу сдать: ${gameToGive}%0A` +
-                                `Игра, которую хочу получить: ${gameToGet}%0A` +
+                                `Игра, которую хочу купить: ${gameToGet}%0A` +
                                 `Версия приставки: ${consoleVersion}`;
                 
                 const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${message}`;
@@ -722,7 +722,7 @@
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Игра, которую хочешь получить</label>
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Игра, которую хочешь купить</label>
                                     <input 
                                         required
                                         type="text"
