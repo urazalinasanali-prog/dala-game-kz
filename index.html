@@ -1120,7 +1120,7 @@
                         {selectionStep === 1 ? (
                             <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
                                 <h2 className="text-4xl md:text-6xl font-bold font-gaming uppercase mb-12 text-center">
-                                    Какая у вас <span className="text-blue-500">приставка?</span>
+                                    {lang === 'RU' ? 'Какая у вас' : 'Қандай'} <span className="text-blue-500">{lang === 'RU' ? 'приставка?' : 'приставкаңыз бар?'}</span>
                                 </h2>
                                 <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl justify-center">
                                     <button 
